@@ -26,7 +26,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import rxjava.fengzi.com.rxjava.rxandroid.io.reactivex.android.plugins.RxAndroidPlugins;
+import android.plugins.RxAndroidPlugins;
 import rxjava.fengzi.com.rxjava.testutil.EmptyScheduler;
 
 import static junit.framework.TestCase.fail;

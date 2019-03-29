@@ -35,7 +35,7 @@ import org.robolectric.ParameterizedRobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.ShadowMessageQueue;
-import rxjava.fengzi.com.rxjava.rxandroid.io.reactivex.android.schedulers.HandlerScheduler;
+import android.schedulers.HandlerScheduler;
 import rxjava.fengzi.com.rxjava.testutil.CountingRunnable;
 
 import static java.util.concurrent.TimeUnit.MINUTES;

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "rxjava.fengzi.com.rxjava"
+        applicationId "com.rxjava"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
@@ -26,4 +26,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     testImplementation "org.robolectric:robolectric:4.2"
+    api 'org.reactivestreams:reactive-streams:1.0.2'
 }

@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
-import rxjava.fengzi.com.rxjava.rxandroid.io.reactivex.android.MainThreadDisposable;
+import android.MainThreadDisposable;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;

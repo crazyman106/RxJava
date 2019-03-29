@@ -28,8 +28,8 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.ShadowMessageQueue;
 import org.robolectric.util.ReflectionHelpers;
-import rxjava.fengzi.com.rxjava.rxandroid.io.reactivex.android.plugins.RxAndroidPlugins;
-import rxjava.fengzi.com.rxjava.rxandroid.io.reactivex.android.schedulers.AndroidSchedulers;
+import android.plugins.RxAndroidPlugins;
+import android.schedulers.AndroidSchedulers;
 import rxjava.fengzi.com.rxjava.testutil.EmptyScheduler;
 
 import static org.junit.Assert.assertEquals;
