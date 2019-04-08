@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -18,6 +18,10 @@ import io.reactivex.annotations.NonNull;
  * Base interface for emitting signals in a push-fashion in various generator-like source
  * operators (create, generate).
  * <p>
+ * 发射器:以推方式发射信号的基本接口,用于作为发射器(信号的生成和发射)
+ *
+ *
+ * <p>
  * Note that the {@link Emitter#onNext}, {@link Emitter#onError} and
  * {@link Emitter#onComplete} methods provided to the function via the {@link Emitter} instance should be called synchronously,
  * never concurrently. Calling them from multiple threads is not supported and leads to an
@@ -29,18 +33,23 @@ public interface Emitter<T> {
 
     /**
      * Signal a normal value.
+     * //用来发送数据，可多次调用，每调用一次发送一条数据
+     *
      * @param value the value to signal, not null
      */
     void onNext(@NonNull T value);
 
     /**
      * Signal a Throwable exception.
+     * //用来发送异常通知，只发送一次，若多次调用只发送第一条
+     *
      * @param error the Throwable to signal, not null
      */
     void onError(@NonNull Throwable error);
 
     /**
      * Signal a completion.
+     * //用来发送完成通知，只发送一次，若多次调用只发送第一条
      */
     void onComplete();
 }

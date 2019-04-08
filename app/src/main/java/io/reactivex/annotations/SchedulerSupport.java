@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -20,10 +20,13 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Indicates what kind of scheduler the class or method uses.
  * <p>
+ * 指示类或方法使用哪种调度程序
+ * <p>
  * Constants are provided for instances from {@link Schedulers} as well as values for
  * {@linkplain #NONE not using a scheduler} and {@linkplain #CUSTOM a manually-specified scheduler}.
  * Libraries providing their own values should namespace them with their base package name followed
  * by a colon ({@code :}) and then a human-readable name (e.g., {@code com.example:ui-thread}).
+ *
  * @since 2.0
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -31,11 +34,14 @@ import io.reactivex.schedulers.Schedulers;
 @Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE})
 public @interface SchedulerSupport {
     /**
+     * 一个特殊值，指示操作符/类不使用调度程序
      * A special value indicating the operator/class doesn't use schedulers.
      */
     String NONE = "none";
     /**
      * A special value indicating the operator/class requires a scheduler to be manually specified.
+     * <p>
+     * 指示操作符/类的特殊值要求手动指定调度程序
      */
     String CUSTOM = "custom";
 
@@ -64,12 +70,14 @@ public @interface SchedulerSupport {
      * The operator/class runs on RxJava's {@linkplain Schedulers#single() single scheduler}
      * or takes timing information from it.
      * <p>History: 2.0.8 - experimental
+     *
      * @since 2.2
      */
     String SINGLE = "io.reactivex:single";
 
     /**
      * The kind of scheduler the class or method uses.
+     *
      * @return the name of the scheduler the class or method uses
      */
     String value();

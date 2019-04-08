@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -24,19 +24,23 @@ import io.reactivex.internal.queue.SpscLinkedArrayQueue;
 import io.reactivex.internal.util.AtomicThrowable;
 import io.reactivex.plugins.RxJavaPlugins;
 
+// 被观察者对象
 public final class ObservableCreate<T> extends Observable<T> {
     final ObservableOnSubscribe<T> source;
 
+    // 把ObservableOnSubscribe对象传入到该类中,是该类的对象持有ObservableOnSubscribe对象的引用
     public ObservableCreate(ObservableOnSubscribe<T> source) {
         this.source = source;
     }
 
     @Override
     protected void subscribeActual(Observer<? super T> observer) {
+        // 发射器:持有观察者对象
         CreateEmitter<T> parent = new CreateEmitter<T>(observer);
+        // 告诉观察者已经成功订阅了被观察者
         observer.onSubscribe(parent);
-
         try {
+            // 发送事件流,完成订阅
             source.subscribe(parent);
         } catch (Throwable ex) {
             Exceptions.throwIfFatal(ex);
@@ -44,10 +48,8 @@ public final class ObservableCreate<T> extends Observable<T> {
         }
     }
 
-    static final class CreateEmitter<T>
-    extends AtomicReference<Disposable>
-    implements ObservableEmitter<T>, Disposable {
-
+    //CreateEmitter通过继承了Java并发包中的原子引用类AtomicReference保证了事件流切断状态Dispose的一致性,并实现了ObservableEmitter接口和Disposable接口
+    static final class CreateEmitter<T> extends AtomicReference<Disposable> implements ObservableEmitter<T>, Disposable {
         private static final long serialVersionUID = -3434801548987643227L;
 
         final Observer<? super T> observer;
@@ -56,20 +58,22 @@ public final class ObservableCreate<T> extends Observable<T> {
             this.observer = observer;
         }
 
+        // 发送事件
         @Override
         public void onNext(T t) {
             if (t == null) {
                 onError(new NullPointerException("onNext called with null. Null values are generally not allowed in 2.x operators and sources."));
                 return;
             }
-            if (!isDisposed()) {
+            if (!isDisposed()) {// 当前的事件流是否被切断
+                //调用观察者的onNext()
                 observer.onNext(t);
             }
         }
 
         @Override
         public void onError(Throwable t) {
-            if (!tryOnError(t)) {
+            if (!tryOnError(t)) {// tryOnError,执行不成功
                 RxJavaPlugins.onError(t);
             }
         }
@@ -79,7 +83,7 @@ public final class ObservableCreate<T> extends Observable<T> {
             if (t == null) {
                 t = new NullPointerException("onError called with null. Null values are generally not allowed in 2.x operators and sources.");
             }
-            if (!isDisposed()) {
+            if (!isDisposed()) {// 当前的事件流是否被切断
                 try {
                     observer.onError(t);
                 } finally {
@@ -94,7 +98,7 @@ public final class ObservableCreate<T> extends Observable<T> {
         public void onComplete() {
             if (!isDisposed()) {
                 try {
-                    observer.onComplete();
+                    observer.onComplete();// 事件发送完成,中断连接
                 } finally {
                     dispose();
                 }
@@ -138,8 +142,8 @@ public final class ObservableCreate<T> extends Observable<T> {
      * @param <T> the value type
      */
     static final class SerializedEmitter<T>
-    extends AtomicInteger
-    implements ObservableEmitter<T> {
+            extends AtomicInteger
+            implements ObservableEmitter<T> {
 
         private static final long serialVersionUID = 4883307006032401862L;
 
@@ -226,9 +230,9 @@ public final class ObservableCreate<T> extends Observable<T> {
             SpscLinkedArrayQueue<T> q = queue;
             AtomicThrowable error = this.error;
             int missed = 1;
-            for (;;) {
+            for (; ; ) {
 
-                for (;;) {
+                for (; ; ) {
                     if (e.isDisposed()) {
                         q.clear();
                         return;

@@ -19,6 +19,7 @@ import io.reactivex.disposables.Disposable;
 /**
  * mechanism:机构学 机理 机械装置
  * Provides a mechanism for receiving push-based notifications.
+ * 提供接收基于推送的通知的机制
  * <p>
  * When an {@code Observer} is subscribed to an {@link ObservableSource} through the {@link ObservableSource#subscribe(Observer)} method,
  * the {@code ObservableSource} calls {@link #onSubscribe(Disposable)}  with a {@link Disposable} that allows
@@ -70,9 +71,9 @@ import io.reactivex.disposables.Disposable;
  * If, for some reason, the {@code Observer} won't follow Rule 2.13, the {@link Observable#safeSubscribe(Observer)} can wrap it
  * with the necessary safeguards and route exceptions thrown from {@code onNext} into {@code onError} and route exceptions thrown
  * from {@code onError} and {@code onComplete} into the global error handler via {@link io.reactivex.plugins.RxJavaPlugins#onError(Throwable)}.
+ *
+ * @param <T> the type of item the Observer expects to observe
  * @see <a href="http://reactivex.io/documentation/observable.html">ReactiveX documentation: Observable</a>
- * @param <T>
- *          the type of item the Observer expects to observe
  */
 public interface Observer<T> {
 
@@ -80,8 +81,13 @@ public interface Observer<T> {
      * Provides the Observer with the means of cancelling (disposing) the
      * connection (channel) with the Observable in both
      * synchronous (from within {@link #onNext(Object)}) and asynchronous manner.
+     * <p>
+     * 提供Disposable,用来处理与被观察者之间的连接,可以是同步,也可以是异步
+     *
+     * 通过Disposable.dispose()随时取消连接
+     *
      * @param d the Disposable instance whose {@link Disposable#dispose()} can
-     * be called anytime to cancel the connection
+     *          be called anytime to cancel the connection
      * @since 2.0
      */
     void onSubscribe(@NonNull Disposable d);
@@ -94,8 +100,7 @@ public interface Observer<T> {
      * The {@code Observable} will not call this method again after it calls either {@link #onComplete} or
      * {@link #onError}.
      *
-     * @param t
-     *          the item emitted by the Observable
+     * @param t the item emitted by the Observable
      */
     void onNext(@NonNull T t);
 
@@ -105,8 +110,7 @@ public interface Observer<T> {
      * If the {@link Observable} calls this method, it will not thereafter call {@link #onNext} or
      * {@link #onComplete}.
      *
-     * @param e
-     *          the exception encountered by the Observable
+     * @param e the exception encountered by the Observable
      */
     void onError(@NonNull Throwable e);
 

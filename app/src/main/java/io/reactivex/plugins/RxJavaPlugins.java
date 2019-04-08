@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -28,8 +28,11 @@ import io.reactivex.internal.util.ExceptionHelper;
 import io.reactivex.observables.ConnectableObservable;
 import io.reactivex.parallel.ParallelFlowable;
 import io.reactivex.schedulers.Schedulers;
+
 /**
  * Utility class to inject handlers to certain standard RxJava operations.
+ * <p>
+ * 将处理程序注入到某些标准RxJava操作的实用程序类
  */
 public final class RxJavaPlugins {
     @Nullable
@@ -115,7 +118,9 @@ public final class RxJavaPlugins {
     @Nullable
     static volatile BooleanSupplier onBeforeBlocking;
 
-    /** Prevents changing the plugins. */
+    /**
+     * Prevents changing the plugins.
+     */
     static volatile boolean lockdown;
 
     /**
@@ -135,6 +140,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns true if the plugins were locked down.
+     *
      * @return true if the plugins were locked down
      */
     public static boolean isLockdown() {
@@ -146,6 +152,7 @@ public final class RxJavaPlugins {
      * with an IllegalStateException on a non-blocking
      * scheduler such as computation or single.
      * <p>History: 2.0.5 - experimental
+     *
      * @param enable enable or disable the feature
      * @since 2.1
      */
@@ -161,6 +168,7 @@ public final class RxJavaPlugins {
      * with an IllegalStateException on a non-blocking scheduler
      * such as computation or single.
      * <p>History: 2.0.5 - experimental
+     *
      * @return true if the blockingX operators fail on a non-blocking scheduler
      * @since 2.1
      */
@@ -170,6 +178,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -179,6 +188,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the a hook consumer.
+     *
      * @return the hook consumer, may be null
      */
     @Nullable
@@ -188,6 +198,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -197,6 +208,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -206,6 +218,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -215,6 +228,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -224,6 +238,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -233,6 +248,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -242,6 +258,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -251,6 +268,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -260,6 +278,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler a {@link Callable} which returns the hook's input value
      * @return the value returned by the hook, not null
      * @throws NullPointerException if the callable parameter or its result are null
@@ -276,6 +295,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler a {@link Callable} which returns the hook's input value
      * @return the value returned by the hook, not null
      * @throws NullPointerException if the callable parameter or its result are null
@@ -292,6 +312,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler a {@link Callable} which returns the hook's input value
      * @return the value returned by the hook, not null
      * @throws NullPointerException if the callable parameter or its result are null
@@ -308,6 +329,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler a {@link Callable} which returns the hook's input value
      * @return the value returned by the hook, not null
      * @throws NullPointerException if the callable parameter or its result are null
@@ -324,6 +346,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler the hook's input value
      * @return the value returned by the hook
      */
@@ -387,6 +410,7 @@ public final class RxJavaPlugins {
      * Checks if the given error is one of the already named
      * bug cases that should pass through {@link #onError(Throwable)}
      * as is.
+     *
      * @param error the error to check
      * @return true if the error should pass through, false if
      * it may be wrapped into an UndeliverableException
@@ -431,6 +455,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler the hook's input value
      * @return the value returned by the hook
      */
@@ -445,6 +470,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler the hook's input value
      * @return the value returned by the hook
      */
@@ -459,6 +485,7 @@ public final class RxJavaPlugins {
 
     /**
      * Called when a task is scheduled.
+     *
      * @param run the runnable instance
      * @return the replacement runnable
      */
@@ -475,6 +502,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param defaultScheduler the hook's input value
      * @return the value returned by the hook
      */
@@ -532,6 +560,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed
      */
     public static void setComputationSchedulerHandler(@Nullable Function<? super Scheduler, ? extends Scheduler> handler) {
@@ -543,6 +572,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed
      */
     public static void setErrorHandler(@Nullable Consumer<? super Throwable> handler) {
@@ -554,6 +584,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed, but the function may not return null
      */
     public static void setInitComputationSchedulerHandler(@Nullable Function<? super Callable<Scheduler>, ? extends Scheduler> handler) {
@@ -565,6 +596,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed, but the function may not return null
      */
     public static void setInitIoSchedulerHandler(@Nullable Function<? super Callable<Scheduler>, ? extends Scheduler> handler) {
@@ -576,6 +608,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed, but the function may not return null
      */
     public static void setInitNewThreadSchedulerHandler(@Nullable Function<? super Callable<Scheduler>, ? extends Scheduler> handler) {
@@ -587,6 +620,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed, but the function may not return null
      */
     public static void setInitSingleSchedulerHandler(@Nullable Function<? super Callable<Scheduler>, ? extends Scheduler> handler) {
@@ -598,6 +632,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed
      */
     public static void setIoSchedulerHandler(@Nullable Function<? super Scheduler, ? extends Scheduler> handler) {
@@ -609,6 +644,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed
      */
     public static void setNewThreadSchedulerHandler(@Nullable Function<? super Scheduler, ? extends Scheduler> handler) {
@@ -620,6 +656,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed
      */
     public static void setScheduleHandler(@Nullable Function<? super Runnable, ? extends Runnable> handler) {
@@ -631,6 +668,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param handler the hook function to set, null allowed
      */
     public static void setSingleSchedulerHandler(@Nullable Function<? super Scheduler, ? extends Scheduler> handler) {
@@ -643,12 +681,14 @@ public final class RxJavaPlugins {
     /**
      * Revokes the lockdown, only for testing purposes.
      */
-    /* test. */static void unlock() {
+    /* test. */
+    static void unlock() {
         lockdown = false;
     }
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -658,6 +698,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -667,6 +708,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @SuppressWarnings("rawtypes")
@@ -677,6 +719,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @SuppressWarnings("rawtypes")
@@ -687,6 +730,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -697,6 +741,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -707,6 +752,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -717,6 +763,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -727,6 +774,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -737,6 +785,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -747,6 +796,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -757,6 +807,7 @@ public final class RxJavaPlugins {
 
     /**
      * Returns the current hook function.
+     *
      * @return the hook function, may be null
      */
     @Nullable
@@ -767,6 +818,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onCompletableAssembly the hook function to set, null allowed
      */
     public static void setOnCompletableAssembly(@Nullable Function<? super Completable, ? extends Completable> onCompletableAssembly) {
@@ -778,6 +830,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onCompletableSubscribe the hook function to set, null allowed
      */
     public static void setOnCompletableSubscribe(
@@ -790,6 +843,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onFlowableAssembly the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -802,6 +856,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onMaybeAssembly the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -814,6 +869,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onConnectableFlowableAssembly the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -826,6 +882,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onFlowableSubscribe the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -838,6 +895,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onMaybeSubscribe the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -850,6 +908,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onObservableAssembly the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -862,6 +921,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onConnectableObservableAssembly the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -874,6 +934,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onObservableSubscribe the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -887,6 +948,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onSingleAssembly the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -899,6 +961,7 @@ public final class RxJavaPlugins {
 
     /**
      * Sets the specific hook function.
+     *
      * @param onSingleSubscribe the hook function to set, null allowed
      */
     @SuppressWarnings("rawtypes")
@@ -911,12 +974,13 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
-     * @param source the hook's input value
+     *
+     * @param <T>        the value type
+     * @param source     the hook's input value
      * @param subscriber the subscriber
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> Subscriber<? super T> onSubscribe(@NonNull Flowable<T> source, @NonNull Subscriber<? super T> subscriber) {
         BiFunction<? super Flowable, ? super Subscriber, ? extends Subscriber> f = onFlowableSubscribe;
@@ -928,12 +992,14 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
-     * @param source the hook's input value
+     * 调用关联的钩子函数
+     *
+     * @param <T>      the value type
+     * @param source   the hook's input value
      * @param observer the observer
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> Observer<? super T> onSubscribe(@NonNull Observable<T> source, @NonNull Observer<? super T> observer) {
         BiFunction<? super Observable, ? super Observer, ? extends Observer> f = onObservableSubscribe;
@@ -945,12 +1011,13 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
-     * @param source the hook's input value
+     *
+     * @param <T>      the value type
+     * @param source   the hook's input value
      * @param observer the observer
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> SingleObserver<? super T> onSubscribe(@NonNull Single<T> source, @NonNull SingleObserver<? super T> observer) {
         BiFunction<? super Single, ? super SingleObserver, ? extends SingleObserver> f = onSingleSubscribe;
@@ -962,7 +1029,8 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param source the hook's input value
+     *
+     * @param source   the hook's input value
      * @param observer the observer
      * @return the value returned by the hook
      */
@@ -977,12 +1045,13 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
-     * @param source the hook's input value
+     *
+     * @param <T>      the value type
+     * @param source   the hook's input value
      * @param observer the subscriber
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> MaybeObserver<? super T> onSubscribe(@NonNull Maybe<T> source, @NonNull MaybeObserver<? super T> observer) {
         BiFunction<? super Maybe, ? super MaybeObserver, ? extends MaybeObserver> f = onMaybeSubscribe;
@@ -994,11 +1063,12 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
+     *
+     * @param <T>    the value type
      * @param source the hook's input value
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> Maybe<T> onAssembly(@NonNull Maybe<T> source) {
         Function<? super Maybe, ? extends Maybe> f = onMaybeAssembly;
@@ -1010,11 +1080,12 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
+     *
+     * @param <T>    the value type
      * @param source the hook's input value
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> Flowable<T> onAssembly(@NonNull Flowable<T> source) {
         Function<? super Flowable, ? extends Flowable> f = onFlowableAssembly;
@@ -1026,11 +1097,12 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
+     *
+     * @param <T>    the value type
      * @param source the hook's input value
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> ConnectableFlowable<T> onAssembly(@NonNull ConnectableFlowable<T> source) {
         Function<? super ConnectableFlowable, ? extends ConnectableFlowable> f = onConnectableFlowableAssembly;
@@ -1042,13 +1114,15 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
+     *
+     * @param <T>    the value type
      * @param source the hook's input value
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> Observable<T> onAssembly(@NonNull Observable<T> source) {
+        // 应用hook函数的一些处理，一般用到不到
         Function<? super Observable, ? extends Observable> f = onObservableAssembly;
         if (f != null) {
             return apply(f, source);
@@ -1058,11 +1132,12 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
+     *
+     * @param <T>    the value type
      * @param source the hook's input value
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> ConnectableObservable<T> onAssembly(@NonNull ConnectableObservable<T> source) {
         Function<? super ConnectableObservable, ? extends ConnectableObservable> f = onConnectableObservableAssembly;
@@ -1074,11 +1149,12 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
-     * @param <T> the value type
+     *
+     * @param <T>    the value type
      * @param source the hook's input value
      * @return the value returned by the hook
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> Single<T> onAssembly(@NonNull Single<T> source) {
         Function<? super Single, ? extends Single> f = onSingleAssembly;
@@ -1090,6 +1166,7 @@ public final class RxJavaPlugins {
 
     /**
      * Calls the associated hook function.
+     *
      * @param source the hook's input value
      * @return the value returned by the hook
      */
@@ -1105,6 +1182,7 @@ public final class RxJavaPlugins {
     /**
      * Sets the specific hook function.
      * <p>History: 2.0.6 - experimental; 2.1 - beta
+     *
      * @param handler the hook function to set, null allowed
      * @since 2.2
      */
@@ -1119,6 +1197,7 @@ public final class RxJavaPlugins {
     /**
      * Returns the current hook function.
      * <p>History: 2.0.6 - experimental; 2.1 - beta
+     *
      * @return the hook function, may be null
      * @since 2.2
      */
@@ -1131,12 +1210,13 @@ public final class RxJavaPlugins {
     /**
      * Calls the associated hook function.
      * <p>History: 2.0.6 - experimental; 2.1 - beta
-     * @param <T> the value type of the source
+     *
+     * @param <T>    the value type of the source
      * @param source the hook's input value
      * @return the value returned by the hook
      * @since 2.2
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @NonNull
     public static <T> ParallelFlowable<T> onAssembly(@NonNull ParallelFlowable<T> source) {
         Function<? super ParallelFlowable, ? extends ParallelFlowable> f = onParallelAssembly;
@@ -1152,6 +1232,7 @@ public final class RxJavaPlugins {
      * and should return true to indicate the operator
      * should not block but throw an IllegalArgumentException.
      * <p>History: 2.0.5 - experimental
+     *
      * @return true if the blocking should be prevented
      * @see #setFailOnNonBlockingScheduler(boolean)
      * @since 2.1
@@ -1173,8 +1254,9 @@ public final class RxJavaPlugins {
      * await; the handler should return true to prevent the blocking
      * and to signal an IllegalStateException instead.
      * <p>History: 2.0.5 - experimental
+     *
      * @param handler the handler to set, null resets to the default handler
-     * that always returns false
+     *                that always returns false
      * @see #onBeforeBlocking()
      * @since 2.1
      */
@@ -1189,6 +1271,7 @@ public final class RxJavaPlugins {
      * Returns the current blocking handler or null if no custom handler
      * is set.
      * <p>History: 2.0.5 - experimental
+     *
      * @return the current blocking handler or null if not specified
      * @since 2.1
      */
@@ -1201,6 +1284,7 @@ public final class RxJavaPlugins {
      * Create an instance of the default {@link Scheduler} used for {@link Schedulers#computation()}
      * except using {@code threadFactory} for thread creation.
      * <p>History: 2.0.5 - experimental
+     *
      * @param threadFactory thread factory to use for creating worker threads. Note that this takes precedence over any
      *                      system properties for configuring new thread creation. Cannot be null.
      * @return the created Scheduler instance
@@ -1215,6 +1299,7 @@ public final class RxJavaPlugins {
      * Create an instance of the default {@link Scheduler} used for {@link Schedulers#io()}
      * except using {@code threadFactory} for thread creation.
      * <p>History: 2.0.5 - experimental
+     *
      * @param threadFactory thread factory to use for creating worker threads. Note that this takes precedence over any
      *                      system properties for configuring new thread creation. Cannot be null.
      * @return the created Scheduler instance
@@ -1229,6 +1314,7 @@ public final class RxJavaPlugins {
      * Create an instance of the default {@link Scheduler} used for {@link Schedulers#newThread()}
      * except using {@code threadFactory} for thread creation.
      * <p>History: 2.0.5 - experimental
+     *
      * @param threadFactory thread factory to use for creating worker threads. Note that this takes precedence over any
      *                      system properties for configuring new thread creation. Cannot be null.
      * @return the created Scheduler instance
@@ -1243,6 +1329,7 @@ public final class RxJavaPlugins {
      * Create an instance of the default {@link Scheduler} used for {@link Schedulers#single()}
      * except using {@code threadFactory} for thread creation.
      * <p>History: 2.0.5 - experimental
+     *
      * @param threadFactory thread factory to use for creating worker threads. Note that this takes precedence over any
      *                      system properties for configuring new thread creation. Cannot be null.
      * @return the created Scheduler instance
@@ -1256,10 +1343,11 @@ public final class RxJavaPlugins {
     /**
      * Wraps the call to the function in try-catch and propagates thrown
      * checked exceptions as RuntimeException.
+     *
      * @param <T> the input type
      * @param <R> the output type
-     * @param f the function to call, not null (not verified)
-     * @param t the parameter value to the function
+     * @param f   the function to call, not null (not verified)
+     * @param t   the parameter value to the function
      * @return the result of the function call
      */
     @NonNull
@@ -1274,12 +1362,13 @@ public final class RxJavaPlugins {
     /**
      * Wraps the call to the function in try-catch and propagates thrown
      * checked exceptions as RuntimeException.
+     *
      * @param <T> the first input type
      * @param <U> the second input type
      * @param <R> the output type
-     * @param f the function to call, not null (not verified)
-     * @param t the first parameter value to the function
-     * @param u the second parameter value to the function
+     * @param f   the function to call, not null (not verified)
+     * @param t   the first parameter value to the function
+     * @param u   the second parameter value to the function
      * @return the result of the function call
      */
     @NonNull
@@ -1294,6 +1383,7 @@ public final class RxJavaPlugins {
     /**
      * Wraps the call to the Scheduler creation callable in try-catch and propagates thrown
      * checked exceptions as RuntimeException and enforces that result is not null.
+     *
      * @param s the {@link Callable} which returns a {@link Scheduler}, not null (not verified). Cannot return null
      * @return the result of the callable call, not null
      * @throws NullPointerException if the callable parameter returns null
@@ -1310,6 +1400,7 @@ public final class RxJavaPlugins {
     /**
      * Wraps the call to the Scheduler creation function in try-catch and propagates thrown
      * checked exceptions as RuntimeException and enforces that result is not null.
+     *
      * @param f the function to call, not null (not verified). Cannot return null
      * @param s the parameter value to the function
      * @return the result of the function call, not null
@@ -1320,7 +1411,9 @@ public final class RxJavaPlugins {
         return ObjectHelper.requireNonNull(apply(f, s), "Scheduler Callable result can't be null");
     }
 
-    /** Helper class, no instances. */
+    /**
+     * Helper class, no instances.
+     */
     private RxJavaPlugins() {
         throw new IllegalStateException("No instances!");
     }

@@ -17,5 +17,7 @@
 /**
  * Functional interfaces of functions and actions of arity 0 to 9 and related
  * utility classes.
+ *
+ * 0-9以及相关工具类的功能和实现的接口类
  */
 package io.reactivex.functions;

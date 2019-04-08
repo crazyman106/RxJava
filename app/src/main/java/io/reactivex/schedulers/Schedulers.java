@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -22,6 +22,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 
 /**
  * Static factory methods for returning standard Scheduler instances.
+ * 返回标准调度程序实例的静态工厂方法
  * <p>
  * The initial and runtime values of the various scheduler types can be overridden via the
  * {@code RxJavaPlugins.setInit(scheduler name)SchedulerHandler()} and
@@ -83,7 +84,9 @@ public final class Schedulers {
         NEW_THREAD = RxJavaPlugins.initNewThreadScheduler(new NewThreadTask());
     }
 
-    /** Utility class. */
+    /**
+     * Utility class.
+     */
     private Schedulers() {
         throw new IllegalStateException("No instances!");
     }
@@ -129,6 +132,7 @@ public final class Schedulers {
      * <p>Operators on the base reactive classes that use this scheduler are marked with the
      * &#64;{@link io.reactivex.annotations.SchedulerSupport SchedulerSupport}({@link io.reactivex.annotations.SchedulerSupport#COMPUTATION COMPUTATION})
      * annotation.
+     *
      * @return a {@link Scheduler} meant for computation-bound work
      */
     @NonNull
@@ -174,6 +178,7 @@ public final class Schedulers {
      * <p>Operators on the base reactive classes that use this scheduler are marked with the
      * &#64;{@link io.reactivex.annotations.SchedulerSupport SchedulerSupport}({@link io.reactivex.annotations.SchedulerSupport#IO IO})
      * annotation.
+     *
      * @return a {@link Scheduler} meant for IO-bound work
      */
     @NonNull
@@ -193,6 +198,7 @@ public final class Schedulers {
      * by RxJava itself but may be found in external libraries.
      * <p>
      * This scheduler can't be overridden via an {@link RxJavaPlugins} method.
+     *
      * @return a {@link Scheduler} that queues work on the current thread
      */
     @NonNull
@@ -232,6 +238,7 @@ public final class Schedulers {
      * <p>Operators on the base reactive classes that use this scheduler are marked with the
      * &#64;{@link io.reactivex.annotations.SchedulerSupport SchedulerSupport}({@link io.reactivex.annotations.SchedulerSupport#NEW_THREAD NEW_TRHEAD})
      * annotation.
+     *
      * @return a {@link Scheduler} that creates new threads
      */
     @NonNull
@@ -281,6 +288,7 @@ public final class Schedulers {
      * <p>Operators on the base reactive classes that use this scheduler are marked with the
      * &#64;{@link io.reactivex.annotations.SchedulerSupport SchedulerSupport}({@link io.reactivex.annotations.SchedulerSupport#SINGLE SINGLE})
      * annotation.
+     *
      * @return a {@link Scheduler} that shares a single backing thread.
      * @since 2.0
      */
@@ -337,8 +345,8 @@ public final class Schedulers {
      * execute those tasks "unexpectedly".
      * <p>
      * Note that this method returns a new {@link Scheduler} instance, even for the same {@link Executor} instance.
-     * @param executor
-     *          the executor to wrap
+     *
+     * @param executor the executor to wrap
      * @return the new Scheduler wrapping the Executor
      */
     @NonNull
@@ -393,10 +401,10 @@ public final class Schedulers {
      * execute those tasks "unexpectedly".
      * <p>
      * Note that this method returns a new {@link Scheduler} instance, even for the same {@link Executor} instance.
-     * @param executor
-     *          the executor to wrap
+     *
+     * @param executor            the executor to wrap
      * @param interruptibleWorker if {@code true} the tasks submitted to the {@link Scheduler.Worker} will
-     * be interrupted when the task is disposed.
+     *                            be interrupted when the task is disposed.
      * @return the new Scheduler wrapping the Executor
      * @since 2.2.6 - experimental
      */

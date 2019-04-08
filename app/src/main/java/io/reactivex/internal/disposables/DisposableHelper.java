@@ -26,11 +26,14 @@ import io.reactivex.plugins.RxJavaPlugins;
 public enum DisposableHelper implements Disposable {
     /**
      * The singleton instance representing a terminal, disposed state, don't leak it.
+     * <p>
+     * 标记事件流被切断（废弃）状态
      */
     DISPOSED;
 
     /**
      * Checks if the given Disposable is the common {@link #DISPOSED} enum value.
+     *
      * @param d the disposable to check
      * @return true if d is {@link #DISPOSED}
      */
@@ -40,11 +43,13 @@ public enum DisposableHelper implements Disposable {
 
     /**
      * Atomically sets the field and disposes the old contents.
+     *
      * @param field the target field
-     * @param d the new Disposable to set
+     * @param d     the new Disposable to set
      * @return true if successful, false if the field contains the {@link #DISPOSED} instance.
      */
     public static boolean set(AtomicReference<Disposable> field, Disposable d) {
+        // 使用原子引用,处理了标志Disposable的并发读写问题
         for (; ; ) {
             Disposable current = field.get();
             if (current == DISPOSED) {
@@ -53,6 +58,7 @@ public enum DisposableHelper implements Disposable {
                 }
                 return false;
             }
+            // 对传入的Disposabled进行比较查看是否中断
             if (field.compareAndSet(current, d)) {
                 if (current != null) {
                     current.dispose();
@@ -70,7 +76,7 @@ public enum DisposableHelper implements Disposable {
      * is signalled to the RxJavaPlugins.onError hook.
      *
      * @param field the target field
-     * @param d the disposable to set, not null
+     * @param d     the disposable to set, not null
      * @return true if the operation succeeded, false
      */
     public static boolean setOnce(AtomicReference<Disposable> field, Disposable d) {
@@ -88,8 +94,9 @@ public enum DisposableHelper implements Disposable {
     /**
      * Atomically replaces the Disposable in the field with the given new Disposable
      * but does not dispose the old one.
+     *
      * @param field the target field to change
-     * @param d the new disposable, null allowed
+     * @param d     the new disposable, null allowed
      * @return true if the operation succeeded, false if the target field contained
      * the common DISPOSED instance and the given disposable (if not null) is disposed.
      */
@@ -110,6 +117,7 @@ public enum DisposableHelper implements Disposable {
 
     /**
      * Atomically disposes the Disposable in the field if not already disposed.
+     *
      * @param field the target field
      * @return true if the current thread managed to dispose the Disposable
      */
@@ -131,8 +139,9 @@ public enum DisposableHelper implements Disposable {
     /**
      * Verifies that current is null, next is not null, otherwise signals errors
      * to the RxJavaPlugins and returns false.
+     *
      * @param current the current Disposable, expected to be null
-     * @param next the next Disposable, expected to be non-null
+     * @param next    the next Disposable, expected to be non-null
      * @return true if the validation succeeded
      */
     public static boolean validate(Disposable current, Disposable next) {
@@ -158,8 +167,9 @@ public enum DisposableHelper implements Disposable {
     /**
      * Atomically tries to set the given Disposable on the field if it is null or disposes it if
      * the field contains {@link #DISPOSED}.
+     *
      * @param field the target field
-     * @param d the disposable to set
+     * @param d     the disposable to set
      * @return true if successful, false otherwise
      */
     public static boolean trySet(AtomicReference<Disposable> field, Disposable d) {

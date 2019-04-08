@@ -20,6 +20,8 @@ package io.reactivex.disposables;
 public interface Disposable {
     /**
      * Dispose the resource, the operation should be idempotent.
+     * 将事件通道设置为切断（废弃）状态
+     * 调用该函数后,导致下游收不到事件.
      */
     void dispose();
 

@@ -29,10 +29,11 @@ public final class ObservableSubscribeOn<T> extends AbstractObservableWithUpstre
 
     @Override
     public void subscribeActual(final Observer<? super T> observer) {
+        // 将我们自定义的Observer包装成了一个SubscribeOnObserver对象
         final SubscribeOnObserver<T> parent = new SubscribeOnObserver<T>(observer);
-
+        // 通知观察者订阅了被观察者
         observer.onSubscribe(parent);
-
+        // 内部先创建了一个SubscribeTask对象
         parent.setDisposable(scheduler.scheduleDirect(new SubscribeTask(parent)));
     }
 

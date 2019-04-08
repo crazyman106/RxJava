@@ -1,11 +1,11 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is
  * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See
  * the License for the specific language governing permissions and limitations under the License.
@@ -87,6 +87,9 @@ import java.util.concurrent.TimeUnit;
  * underlying task-execution scheme if the shutdown/dispose was detected after this submission.
  * <p>
  * All methods on the {@code Scheduler} and {@code Worker} classes should be thread safe.
+ * <p>
+ * <p>
+ * Scheduler调度类
  */
 public abstract class Scheduler {
     /**
@@ -95,6 +98,7 @@ public abstract class Scheduler {
      * The associated system parameter, {@code rx2.scheduler.drift-tolerance}, expects its value in minutes.
      */
     static final long CLOCK_DRIFT_TOLERANCE_NANOSECONDS;
+
     static {
         CLOCK_DRIFT_TOLERANCE_NANOSECONDS = TimeUnit.MINUTES.toNanos(
                 Long.getLong("rx2.scheduler.drift-tolerance", 15));
@@ -103,6 +107,7 @@ public abstract class Scheduler {
     /**
      * Returns the clock drift tolerance in nanoseconds.
      * <p>Related system property: {@code rx2.scheduler.drift-tolerance} in minutes.
+     *
      * @return the tolerance in nanoseconds
      * @since 2.0
      */
@@ -126,6 +131,7 @@ public abstract class Scheduler {
 
     /**
      * Returns the 'current time' of the Scheduler in the specified time unit.
+     *
      * @param unit the time unit
      * @return the 'current time'
      * @since 2.0
@@ -156,6 +162,7 @@ public abstract class Scheduler {
      * Implementations should make sure the call is idempotent, thread-safe and
      * should not throw any {@code RuntimeException} if it doesn't support this
      * functionality.
+     *
      * @since 2.0
      */
     public void shutdown() {
@@ -170,7 +177,6 @@ public abstract class Scheduler {
      * ordering or non-overlapping guarantees between tasks.
      *
      * @param run the task to execute
-     *
      * @return the Disposable instance that let's one cancel this particular task.
      * @since 2.0
      */
@@ -186,14 +192,15 @@ public abstract class Scheduler {
      * This method is safe to be called from multiple threads but there are no
      * ordering guarantees between tasks.
      *
-     * @param run the task to schedule
+     * @param run   the task to schedule
      * @param delay the delay amount, non-positive values indicate non-delayed scheduling
-     * @param unit the unit of measure of the delay amount
+     * @param unit  the unit of measure of the delay amount
      * @return the Disposable that let's one cancel this particular delayed task.
      * @since 2.0
      */
     @NonNull
     public Disposable scheduleDirect(@NonNull Runnable run, long delay, @NonNull TimeUnit unit) {
+        // createWorker()方法创建一个工作者对象
         final Worker w = createWorker();
 
         final Runnable decoratedRun = RxJavaPlugins.onSchedule(run);
@@ -217,10 +224,10 @@ public abstract class Scheduler {
      * {@code initialDelay}, the second after {@code initialDelay + period}, the third after
      * {@code initialDelay + 2 * period}, and so on.
      *
-     * @param run the task to schedule
+     * @param run          the task to schedule
      * @param initialDelay the initial delay amount, non-positive values indicate non-delayed scheduling
-     * @param period the period at which the task should be re-executed
-     * @param unit the unit of measure of the delay amount
+     * @param period       the period at which the task should be re-executed
+     * @param unit         the unit of measure of the delay amount
      * @return the Disposable that let's one cancel this particular delayed task.
      * @since 2.0
      */
@@ -292,7 +299,7 @@ public abstract class Scheduler {
      *  return Completable.merge(Flowable.merge(workers, 2));
      * });
      * </pre>
-     *
+     * <p>
      * Slowing down the rate to no more than than 1 a second. This suffers from
      * the same problem as the one above I could find an {@link Flowable}
      * operator that limits the rate without dropping the values (aka leaky
@@ -309,9 +316,10 @@ public abstract class Scheduler {
      * </pre>
      *
      * <p>History: 2.0.1 - experimental
-     * @param <S> a Scheduler and a Subscription
+     *
+     * @param <S>     a Scheduler and a Subscription
      * @param combine the function that takes a two-level nested Flowable sequence of a Completable and returns
-     * the Completable that will be subscribed to and should trigger the execution of the scheduled Actions.
+     *                the Completable that will be subscribed to and should trigger the execution of the scheduled Actions.
      * @return the Scheduler with the customized execution behavior
      * @since 2.1
      */
@@ -362,8 +370,7 @@ public abstract class Scheduler {
          *
          * <p>The default implementation delegates to {@link #schedule(Runnable, long, TimeUnit)}.
          *
-         * @param run
-         *            Runnable to schedule
+         * @param run Runnable to schedule
          * @return a Disposable to be able to unsubscribe the action (cancel it if not executed)
          */
         @NonNull
@@ -378,13 +385,10 @@ public abstract class Scheduler {
          * Note to implementors: non-positive {@code delayTime} should be regarded as non-delayed schedule, i.e.,
          * as if the {@link #schedule(Runnable)} was called.
          *
-         * @param run
-         *            the Runnable to schedule
-         * @param delay
-         *            time to "wait" before executing the action; non-positive values indicate an non-delayed
-         *            schedule
-         * @param unit
-         *            the time unit of {@code delayTime}
+         * @param run   the Runnable to schedule
+         * @param delay time to "wait" before executing the action; non-positive values indicate an non-delayed
+         *              schedule
+         * @param unit  the time unit of {@code delayTime}
          * @return a Disposable to be able to unsubscribe the action (cancel it if not executed)
          */
         @NonNull
@@ -406,16 +410,12 @@ public abstract class Scheduler {
          * creation of the wrapper and tracker objects upon each periodic invocation of the
          * common {@link #schedule(Runnable, long, TimeUnit)} method).
          *
-         * @param run
-         *            the Runnable to execute periodically
-         * @param initialDelay
-         *            time to wait before executing the action for the first time; non-positive values indicate
-         *            an non-delayed schedule
-         * @param period
-         *            the time interval to wait each time in between executing the action; non-positive values
-         *            indicate no delay between repeated schedules
-         * @param unit
-         *            the time unit of {@code period}
+         * @param run          the Runnable to execute periodically
+         * @param initialDelay time to wait before executing the action for the first time; non-positive values indicate
+         *                     an non-delayed schedule
+         * @param period       the time interval to wait each time in between executing the action; non-positive values
+         *                     indicate no delay between repeated schedules
+         * @param unit         the time unit of {@code period}
          * @return a Disposable to be able to unsubscribe the action (cancel it if not executed)
          */
         @NonNull
@@ -443,6 +443,7 @@ public abstract class Scheduler {
 
         /**
          * Returns the 'current time' of the Worker in the specified time unit.
+         *
          * @param unit the time unit
          * @return the 'current time'
          * @since 2.0
@@ -466,7 +467,7 @@ public abstract class Scheduler {
             long startInNanoseconds;
 
             PeriodicTask(long firstStartInNanoseconds, @NonNull Runnable decoratedRun,
-                    long firstNowNanoseconds, @NonNull SequentialDisposable sd, long periodInNanoseconds) {
+                         long firstNowNanoseconds, @NonNull SequentialDisposable sd, long periodInNanoseconds) {
                 this.decoratedRun = decoratedRun;
                 this.sd = sd;
                 this.periodInNanoseconds = periodInNanoseconds;
@@ -510,7 +511,7 @@ public abstract class Scheduler {
     }
 
     static final class PeriodicDirectTask
-    implements Disposable, Runnable, SchedulerRunnableIntrospection {
+            implements Disposable, Runnable, SchedulerRunnableIntrospection {
 
         @NonNull
         final Runnable run;
@@ -585,7 +586,7 @@ public abstract class Scheduler {
         @Override
         public void dispose() {
             if (runner == Thread.currentThread() && w instanceof NewThreadWorker) {
-                ((NewThreadWorker)w).shutdown();
+                ((NewThreadWorker) w).shutdown();
             } else {
                 w.dispose();
             }

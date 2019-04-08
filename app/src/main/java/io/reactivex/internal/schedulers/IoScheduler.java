@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2016-present, RxJava Contributors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.*;
 
 /**
  * Scheduler that creates and caches a set of thread pools and reuses them if possible.
+ * 调度程序，它创建并缓存一组线程池，并在可能的情况下重用它们
  */
 public final class IoScheduler extends Scheduler {
     private static final String WORKER_THREAD_NAME_PREFIX = "RxCachedThreadScheduler";
@@ -178,7 +179,7 @@ public final class IoScheduler extends Scheduler {
 
     @Override
     public void shutdown() {
-        for (;;) {
+        for (; ; ) {
             CachedWorkerPool curr = pool.get();
             if (curr == NONE) {
                 return;
