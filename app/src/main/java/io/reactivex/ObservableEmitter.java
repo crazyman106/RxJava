@@ -107,7 +107,7 @@ public interface ObservableEmitter<T> extends Emitter<T> {
      * <p>History: 2.1.1 - experimental
      *
      * @param t the throwable error to signal if possible
-     * @return true if successful, false if the downstream is not able to accept further
+     * @return true if successful, false if the downstream is not able to accept further(如果下游不允许接收事件,则返回错误)
      * events
      * @since 2.2
      */

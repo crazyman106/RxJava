@@ -134,6 +134,8 @@ public final class Schedulers {
      * annotation.
      *
      * @return a {@link Scheduler} meant for computation-bound work
+     * <p>
+     * 代表CPU计算密集型的操作, 例如需要大量计算的操作
      */
     @NonNull
     public static Scheduler computation() {
@@ -178,6 +180,7 @@ public final class Schedulers {
      * <p>Operators on the base reactive classes that use this scheduler are marked with the
      * &#64;{@link io.reactivex.annotations.SchedulerSupport SchedulerSupport}({@link io.reactivex.annotations.SchedulerSupport#IO IO})
      * annotation.
+     * 代表io操作的线程, 通常用于网络,读写文件等io密集型的操作
      *
      * @return a {@link Scheduler} meant for IO-bound work
      */

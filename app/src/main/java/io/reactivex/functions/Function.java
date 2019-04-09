@@ -21,6 +21,7 @@ import io.reactivex.annotations.NonNull;
  * <p>
  * <p>
  * 函数接口，它接受一个值并返回另一个值，可能带有不同类型
+ * 用于变换对象
  *
  * @param <T> the input value type
  * @param <R> the output value type

@@ -17,6 +17,7 @@ package io.reactivex.functions;
  * A functional interface (callback) that accepts a single value.
  *
  * 接受单个值的函数接口(回调)
+ * 消费者:用于接收单个值，
  * @param <T> the value type
  */
 public interface Consumer<T> {
