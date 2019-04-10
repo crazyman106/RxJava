@@ -41,7 +41,6 @@ public final class ObservableObserveOn<T> extends AbstractObservableWithUpstream
             source.subscribe(observer);
         } else {
             Scheduler.Worker w = scheduler.createWorker();
-
             source.subscribe(new ObserveOnObserver<T>(observer, w, delayError, bufferSize));
         }
     }

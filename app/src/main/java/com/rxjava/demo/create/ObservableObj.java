@@ -32,6 +32,7 @@ public class ObservableObj<T> {
      *         return source;
      *     }
      *     1.对ObservableCreate进行一些处理,然后返回该对象
+     *
      *  二:订阅
      *     public final void subscribe(Observer<? super T> observer) {
      *             1.
@@ -60,6 +61,11 @@ public class ObservableObj<T> {
      *     1.创建一个信号发射器(既发射事件的类),他持有观察者对象
      *     2.观察者绑定发射器
      *     3.接口回调:void subscribe(@NonNull ObservableEmitter<T> emitter) throws Exception;
+     *
+     *  三:线程切换
+     *
+     *
+     *
      * @param obj
      * @return
      */
