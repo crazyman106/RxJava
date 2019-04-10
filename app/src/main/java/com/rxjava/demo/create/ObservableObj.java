@@ -48,7 +48,9 @@ public class ObservableObj<T> {
      *         //2. 告诉观察者已经成功订阅了被观察者
      *         observer.onSubscribe(parent);
      *         try {
-     *             //3. 发送事件流,完成订阅
+     *             //3. 发送事件流,完成订阅:ObservableOnSubscribe调用它的函数
+     *             // 回调函数:subscribe();传递参数CreateEmitter<T>(observer)
+     *             // 在CreateEmitter中持有了Observer对象,我们调用CreateEmitter发射事件时,会触发Observer调用对应的函数
      *             source.subscribe(parent);
      *         } catch (Throwable ex) {
      *             Exceptions.throwIfFatal(ex);
@@ -57,7 +59,7 @@ public class ObservableObj<T> {
      *     }
      *     1.创建一个信号发射器(既发射事件的类),他持有观察者对象
      *     2.观察者绑定发射器
-     *     3.接口回调
+     *     3.接口回调:void subscribe(@NonNull ObservableEmitter<T> emitter) throws Exception;
      * @param obj
      * @return
      */
