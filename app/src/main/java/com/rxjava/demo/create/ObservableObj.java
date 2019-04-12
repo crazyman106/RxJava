@@ -4,6 +4,7 @@ import android.schedulers.AndroidSchedulers;
 import android.util.Log;
 import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.observables.GroupedObservable;
 import io.reactivex.schedulers.Schedulers;
@@ -168,6 +169,55 @@ public class ObservableObj<T> {
         // 订阅
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
+    public void window() {
+        // 创建被观察者
+        Observable observable = (Observable) Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                // 消息发射器
+                emitter.onNext("success1");
+                emitter.onNext("success2");
+                emitter.onNext("success3");
+                emitter.onNext("success4");
+                emitter.onNext("success5");
+                emitter.onNext("success6");
+            }
+        });
+
+        // 创建观察者
+        Observer observer = new Observer<List<String>>() {
+            Disposable disposable;
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                this.disposable = d;
+                Log.e(TAG, "onSubscribe");
+            }
+
+            @Override
+            public void onNext(List<String> data) {
+                for (String str : data) {
+                    Log.e(TAG, "onNext: " + str);
+                    if (str == "success6") {
+                        disposable.dispose();
+                    }
+                }
+                Log.e(TAG, "onNext: " + data.size());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete");
+            }
+        };
+        // 订阅
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
 
 
     public void flatMap() {
@@ -192,6 +242,12 @@ public class ObservableObj<T> {
                         emitter.onNext(s + ": c");
                     }
                 });
+            }
+        }, new BiFunction<String, String, String>() {
+            @Override
+            public String apply(String s, String s2) throws Exception {
+                // 对上述生成的分类 Observable发射的内容进行处理
+                return s + s2;
             }
         });
 
@@ -282,6 +338,101 @@ public class ObservableObj<T> {
 
                     }
                 });
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete");
+            }
+        };
+        // 订阅
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
+
+
+    public void map() {
+        // 创建被观察者
+        Observable observable = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                // 消息发射器
+                emitter.onNext("success1");
+                emitter.onNext("success2");
+                emitter.onNext("success3");
+                emitter.onNext("success4");
+                emitter.onComplete();
+            }
+        }).map(new Function<String, String>() {
+            @Override
+            public String apply(String o) throws Exception {
+                return o + ":a";
+            }
+        });
+        // 创建观察者
+        Observer observer = new Observer<String>() {
+            Disposable disposable;
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                this.disposable = d;
+                Log.e(TAG, "onSubscribe");
+            }
+
+            @Override
+            public void onNext(String string) {
+                Log.e(TAG, "onNext:" + string);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete");
+            }
+        };
+        // 订阅
+        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+    }
+
+    public void scan() {
+        // 创建被观察者
+        Observable observable = Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
+                // 消息发射器
+                emitter.onNext("success1");
+                emitter.onNext("success2");
+                emitter.onNext("success3");
+                emitter.onNext("success4");
+                emitter.onComplete();
+            }
+        }).scan("haha", new BiFunction<String, String, String>() {
+            @Override
+            public String apply(String s, String s2) throws Exception {
+                return s2 + "--" + s;
+            }
+        });
+        // 创建观察者
+        Observer observer = new Observer<String>() {
+            Disposable disposable;
+
+            @Override
+            public void onSubscribe(Disposable d) {
+                this.disposable = d;
+                Log.e(TAG, "onSubscribe");
+            }
+
+            @Override
+            public void onNext(String string) {
+                Log.e(TAG, "onNext:" + string);
             }
 
             @Override
