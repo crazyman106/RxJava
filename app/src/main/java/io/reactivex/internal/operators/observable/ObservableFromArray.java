@@ -37,13 +37,13 @@ public final class ObservableFromArray<T> extends Observable<T> {
         d.run();
     }
 
-    static final class FromArrayDisposable<T> extends BasicQueueDisposable<T> {
+        static final class FromArrayDisposable<T> extends BasicQueueDisposable<T> {
 
-        final Observer<? super T> downstream;
+            final Observer<? super T> downstream;
 
-        final T[] array;
+            final T[] array;
 
-        int index;
+            int index;
 
         boolean fusionMode;
 
