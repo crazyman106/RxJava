@@ -20,6 +20,10 @@ public class MainActivity extends AppCompatActivity {
          * 2.创建观察者
          * 3.订阅
          */
+    }
 
+
+    interface Func {
+        int fun(int n);
     }
 }
