@@ -35,25 +35,44 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * The {@code Maybe} class represents a deferred computation and emission of a single value, no value at all or an exception.
- * <p>
+ * <p> 该类表示单个值、完全没有值或异常的延迟计算和发射
  * The {@code Maybe} class implements the {@link MaybeSource} base interface and the default consumer
  * type it interacts with is the {@link MaybeObserver} via the {@link #subscribe(MaybeObserver)} method.
  * <p>
  * The {@code Maybe} operates with the following sequential protocol:
- * <pre><code>
+ * <pre><code> 按照这个顺序执行
  *     onSubscribe (onSuccess | onError | onComplete)?
  * </code></pre>
  * <p>
  * Note that {@code onSuccess}, {@code onError} and {@code onComplete} are mutually exclusive events; unlike {@code Observable},
  * {@code onSuccess} is never followed by {@code onError} or {@code onComplete}.
+ *
+ * (onSuccess | onError | onComplete)三个数互斥的.
  * <p>
  * Like {@link Observable}, a running {@code Maybe} can be stopped through the {@link Disposable} instance
  * provided to consumers through {@link MaybeObserver#onSubscribe}.
- * <p>
+ *
+ * <p>Maybe可以通过onSubscribe获取Disposable,通过disposable停止运行
+ *
  * Like an {@code Observable}, a {@code Maybe} is lazy, can be either "hot" or "cold", synchronous or
  * asynchronous. {@code Maybe} instances returned by the methods of this class are <em>cold</em>
  * and there is a standard <em>hot</em> implementation in the form of a subject:
  * {@link io.reactivex.subjects.MaybeSubject MaybeSubject}.
+ *
+ * Hot Observable无论有没有观察者进行订阅事件始终都会发生. 当Hot Observable 有多个订阅者时(即多个订阅者进行订阅时),
+ * Hot Observable与订阅者们的关系是一对多的关系,可以与多个订阅者共享信息.
+ * 通过publish()操作符将我们的Cold Observable转化成为一个ConnectableObservable的Hot Observable
+ * 生成的ConnectableObservable需要调用connect()才能够真正执行上游发射数据流的代码
+ *
+ *
+ * Cold Observable是只有观察者进行订阅了,才开始执行发射数据流的代码.并且Cold Observable和Observer只能是一对一的关系,
+ * 当有多个不同的订阅者时,上游的Observable每有一个订阅者订阅一次就会重新执行一次发射数据流的代码. 也就是说，对于Cold Observable而言,有多个Observer的时候它们各自的事件是独立存在的
+ * 通过Observable的create just  fromXxx range timer等这些创建的都是Cold Observable即冷的Observable对象
+ *
+ *
+ *
+ * Maybe和Observable一样,是懒加载,可以是同步和异步.
+ *
  * <p>
  * The documentation for this class makes use of marble diagrams. The following legend explains these diagrams:
  * <p>

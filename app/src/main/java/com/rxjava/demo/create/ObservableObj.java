@@ -1,5 +1,6 @@
 package com.rxjava.demo.create;
 
+import android.annotation.SuppressLint;
 import android.schedulers.AndroidSchedulers;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -9,6 +10,7 @@ import io.reactivex.functions.*;
 import io.reactivex.observables.GroupedObservable;
 import io.reactivex.schedulers.Schedulers;
 
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -803,26 +805,20 @@ public class ObservableObj<T> {
 
     public void filter() {
         // 创建被观察者
-        Observable observable = Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
-                // 消息发射器
-                emitter.onNext("success1");
-                emitter.onNext("success2");
-                emitter.onNext("success3");
-                emitter.onNext("success4");
-                emitter.onNext("success4");
-                emitter.onComplete();
+        Observable observable = Observable.create((ObservableOnSubscribe<String>) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success4");
+            emitter.onComplete();
+        }).ofType(String.class)/*filter(s -> {
+            if (s.equals("success1")) {
+                return true;
             }
-        }).filter(new Predicate<String>() {
-            @Override
-            public boolean test(String s) throws Exception {
-                if (s.equals("success1")) {
-                    return true;
-                }
-                return false;
-            }
-        });
+            return false;
+        })*/;
         // 创建观察者
         Observer observer = new Observer<String>() {
             Disposable disposable;
@@ -852,6 +848,177 @@ public class ObservableObj<T> {
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
+    public void elementAt() {
+        // 创建被观察者
+        Observable.create((ObservableOnSubscribe<String>) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success4");
+            emitter.onComplete();
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                /*.elementAt(3)*/
+                .elementAt(2, "success_default")
+                .subscribe(new SingleObserver<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e(TAG, "onSubscribe");
+                    }
+
+                    @Override
+                    public void onSuccess(String s) {
+                        Log.e(TAG, "onSuccess:" + s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError:" + e.getMessage());
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    public void ofType() {
+        // 创建被观察者
+        Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success4");
+            emitter.onNext(12);
+            emitter.onComplete();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .ofType(Integer.class)
+                .subscribe(value -> {
+                    Log.e(TAG, "value:" + value);
+                });
+
+    }
+
+    public void first() {
+        // 创建被观察者
+        Observable
+                .create((ObservableOnSubscribe) emitter -> {
+                    // 消息发射器
+                    emitter.onNext(12);
+                    emitter.onComplete();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(value -> {
+                    Log.e(TAG, "onSuccess:" + value);
+                }, throwable -> {
+                    Log.e(TAG, "onError:" + throwable.toString());
+                });
+    }
+
+    public void ignoreElements() {
+        // 创建被观察者
+        Observable
+                .create((ObservableOnSubscribe) emitter -> {
+                    // 消息发射器
+                    emitter.onNext(12);
+                    emitter.onComplete();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .ignoreElements()
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e(TAG, "onSubscribe");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, "onComplete");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError:" + e.getMessage());
+                    }
+                });
+    }
+
+    public void last() {
+        // 创建被观察者
+        Observable
+                .create((ObservableOnSubscribe) emitter -> {
+                    // 消息发射器
+                    emitter.onNext(11);
+                    emitter.onNext(13);
+                    emitter.onNext(15);
+                    emitter.onComplete();
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .lastElement()
+                .subscribe(new MaybeObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e(TAG, "onSubscribe");
+                    }
+
+                    @Override
+                    public void onSuccess(Object o) {
+                        Log.e(TAG, "onSuccess:" + o.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, "onComplete");
+                    }
+                });
+    }
+
+    public void sample() {
+        // 创建被观察者
+        Observable.interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                /*.throttleFirst(2, TimeUnit.SECONDS)*/
+                .sample(2, TimeUnit.SECONDS)
+                .sample(new ObservableSource<Object>() {
+                    @Override
+                    public void subscribe(Observer<? super Object> observer) {
+                        observer.onNext("哈哈哈哈哈哈");
+                    }
+                })
+                .subscribe(new Observer() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e(TAG, "onDis");
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        Log.e(TAG, "onNext:" + o.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError:" + e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, "onComplete");
+                    }
+                });
+    }
 
     /**
      * defer 就相当于懒加载，只有等observable 与observer建立了订阅关系时，observable才会建立
