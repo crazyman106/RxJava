@@ -991,6 +991,12 @@ public class ObservableObj<T> {
                 .observeOn(AndroidSchedulers.mainThread())
                 /*.throttleFirst(2, TimeUnit.SECONDS)*/
                 .sample(2, TimeUnit.SECONDS)
+                .skipUntil(new ObservableSource<Object> () {
+                    @Override
+                    public void subscribe(Observer<? super Object> observer) {
+
+                    }
+                })
                 .sample(new ObservableSource<Object>() {
                     @Override
                     public void subscribe(Observer<? super Object> observer) {
@@ -1019,6 +1025,27 @@ public class ObservableObj<T> {
                     }
                 });
     }
+
+    public void combinelatest() {
+        // 创建被观察者
+        Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success4");
+            emitter.onNext(12);
+            emitter.onComplete();
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .ofType(Integer.class)
+                .subscribe(value -> {
+                    Log.e(TAG, "value:" + value);
+                });
+    }
+
 
     /**
      * defer 就相当于懒加载，只有等observable 与observer建立了订阅关系时，observable才会建立
