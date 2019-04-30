@@ -10,6 +10,7 @@ import io.reactivex.functions.*;
 import io.reactivex.observables.GroupedObservable;
 import io.reactivex.schedulers.Schedulers;
 
+import java.lang.reflect.Array;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -991,7 +992,7 @@ public class ObservableObj<T> {
                 .observeOn(AndroidSchedulers.mainThread())
                 /*.throttleFirst(2, TimeUnit.SECONDS)*/
                 .sample(2, TimeUnit.SECONDS)
-                .skipUntil(new ObservableSource<Object> () {
+                .skipUntil(new ObservableSource<Object>() {
                     @Override
                     public void subscribe(Observer<? super Object> observer) {
 
@@ -1028,22 +1029,87 @@ public class ObservableObj<T> {
 
     public void combinelatest() {
         // 创建被观察者
+        Observable observable1 = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success5");
+        });
+        Observable observable2 = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("a");
+            emitter.onNext("b");
+            emitter.onNext("c");
+            emitter.onNext("d");
+            emitter.onNext("e");
+            emitter.onNext("f");
+        });
+        //.combineLatest(observable1, observable2, (BiFunction<String, String, String>) (s, s2) -> s + s2)
+        observable1.withLatestFrom(observable2, new BiFunction<String, String, String>() {
+            @Override
+            public String apply(String o, String o2) throws Exception {
+                return o + o2;
+            }
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e("ObservableObj", "onSubscribe");
+                    }
+
+                    @Override
+                    public void onNext(Object o) {
+                        Log.e("ObservableObj_next", o.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("ObservableObj", "onError");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e("ObservableObj", "onComplete");
+                    }
+                });
+    }
+
+    public void join() {
+        Observable observable = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("a");
+            emitter.onNext("b");
+            emitter.onNext("c");
+            emitter.onNext("d");
+            emitter.onNext("e");
+            emitter.onNext("f");
+        });
         Observable.create((ObservableOnSubscribe) emitter -> {
             // 消息发射器
             emitter.onNext("success1");
             emitter.onNext("success2");
             emitter.onNext("success3");
             emitter.onNext("success4");
-            emitter.onNext("success4");
-            emitter.onNext(12);
-            emitter.onComplete();
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .ofType(Integer.class)
-                .subscribe(value -> {
-                    Log.e(TAG, "value:" + value);
-                });
+            emitter.onNext("success5");
+        }).join(observable, new Function() {
+            @Override
+            public Object apply(Object o) throws Exception {
+                return  Observable.timer(3000, TimeUnit.MILLISECONDS);
+            }
+        }, new Function() {
+            @Override
+            public Object apply(Object o) throws Exception {
+                return null;
+            }
+        }, new BiFunction() {
+            @Override
+            public Object apply(Object o, Object o2) throws Exception {
+                return null;
+            }
+        });
     }
 
 

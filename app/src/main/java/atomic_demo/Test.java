@@ -3,7 +3,7 @@ package atomic_demo;
 public class Test {
 
     public static void main(String args[]) {
-        final AtomicCount atomicCount = new AtomicCount();
+      /*  final AtomicCount atomicCount = new AtomicCount();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -43,6 +43,6 @@ public class Test {
                         System.out.println(atomicCount.get());
                 }
             }
-        }).start();
+        }).start();*/
     }
 }
