@@ -1097,21 +1097,214 @@ public class ObservableObj<T> {
         }).join(observable, new Function() {
             @Override
             public Object apply(Object o) throws Exception {
-                return  Observable.timer(3000, TimeUnit.MILLISECONDS);
+                return Observable.timer(1000, TimeUnit.MILLISECONDS);
             }
         }, new Function() {
             @Override
             public Object apply(Object o) throws Exception {
-                return null;
+                return Observable.timer(500, TimeUnit.MILLISECONDS);
             }
         }, new BiFunction() {
             @Override
             public Object apply(Object o, Object o2) throws Exception {
-                return null;
+                return o + "--" + o2;
+            }
+        }).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e("ObservableObj", "onSubscribe");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e("ObservableObj_next", o.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("ObservableObj", "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("ObservableObj", "onComplete");
             }
         });
     }
 
+
+    public void merge() {
+        Observable observable = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("a");
+            emitter.onNext("b");
+            emitter.onError(new Throwable("--------"));
+            emitter.onNext("c");
+            emitter.onNext("d");
+            emitter.onNext("e");
+            emitter.onNext("f");
+        });
+        Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            Thread.sleep(100);
+            emitter.onNext("success2");
+            Thread.sleep(500);
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success5");
+        }).mergeWith(observable).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e("ObservableObj", "onSubscribe");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e("ObservableObj_next", o.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("ObservableObj", "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("ObservableObj", "onComplete");
+            }
+        });
+    }
+
+    public void startWith_() {
+        Observable observable = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("a");
+            emitter.onNext("b");
+            emitter.onNext("c");
+            emitter.onNext("d");
+            emitter.onNext("e");
+            emitter.onNext("f");
+            emitter.onComplete();
+        });
+        Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success5");
+            emitter.onComplete();
+        }).startWith(observable).startWith("start---").subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e("ObservableObj", "onSubscribe");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e("ObservableObj_next", o.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("ObservableObj", "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("ObservableObj", "onComplete");
+            }
+        });
+    }
+
+    public void switch_() {
+        Observable observable = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("a");
+            emitter.onNext("b");
+            emitter.onNext("c");
+            emitter.onNext("d");
+            emitter.onNext("e");
+            emitter.onNext("f");
+            emitter.onComplete();
+        });
+        Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success5");
+            emitter.onComplete();
+        }).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e("ObservableObj", "onSubscribe");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e("ObservableObj_next", o.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("ObservableObj", "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("ObservableObj", "onComplete");
+            }
+        });
+    }
+
+    public void zip() {
+        Observable observable = Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("a");
+            emitter.onNext("b");
+            emitter.onNext("c");
+            emitter.onNext("d");
+            emitter.onNext("e");
+            emitter.onNext("f");
+        });
+        Observable.create((ObservableOnSubscribe) emitter -> {
+            // 消息发射器
+            emitter.onNext("success1");
+            emitter.onNext("success2");
+            emitter.onNext("success3");
+            emitter.onNext("success4");
+            emitter.onNext("success5");
+            emitter.onComplete();
+        }).zipWith(observable, new BiFunction() {
+            @Override
+            public Object apply(Object o, Object o2) throws Exception {
+                return o + "--" + o2;
+            }
+        }).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e("ObservableObj", "onSubscribe");
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e("ObservableObj_next", o.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("ObservableObj", "onError");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("ObservableObj", "onComplete");
+            }
+        });
+    }
 
     /**
      * defer 就相当于懒加载，只有等observable 与observer建立了订阅关系时，observable才会建立
