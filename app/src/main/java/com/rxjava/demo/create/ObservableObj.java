@@ -4,11 +4,14 @@ import android.annotation.SuppressLint;
 import android.schedulers.AndroidSchedulers;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import com.rxjava.demo.fanxing.Func1;
 import io.reactivex.*;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.*;
 import io.reactivex.observables.GroupedObservable;
 import io.reactivex.schedulers.Schedulers;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import java.lang.reflect.Array;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
@@ -1269,16 +1272,15 @@ public class ObservableObj<T> {
             emitter.onNext("d");
             emitter.onNext("e");
             emitter.onNext("f");
-        });
+        }).subscribeOn(Schedulers.io());
         Observable.create((ObservableOnSubscribe) emitter -> {
             // 消息发射器
             emitter.onNext("success1");
             emitter.onNext("success2");
             emitter.onNext("success3");
+            Thread.sleep(1000);
             emitter.onNext("success4");
-            emitter.onNext("success5");
-            emitter.onComplete();
-        }).zipWith(observable, new BiFunction() {
+        }).subscribeOn(Schedulers.io()).zipWith(observable, new BiFunction() {
             @Override
             public Object apply(Object o, Object o2) throws Exception {
                 return o + "--" + o2;
@@ -1304,6 +1306,83 @@ public class ObservableObj<T> {
                 Log.e("ObservableObj", "onComplete");
             }
         });
+    }
+
+    private Observable<String> createObserver() {
+        return Observable.create(emitter -> {
+            for (int i = 1; i <= 6; i++) {
+                if (i < 3) {
+                    emitter.onNext(i + "");
+                } else {
+                    emitter.onError(new Throwable("Throw error"));
+                }
+            }
+            emitter.onComplete();
+        });
+    }
+
+    private Observable<String> createObserver2() {
+        return Observable.create(emitter -> {
+            for (int i = 1; i <= 6; i++) {
+                if (i < 3) {
+                    emitter.onNext("onNext:" + i);
+                } else {
+                    emitter.onError(new Exception("the nubmer is greater than 3"));
+                    //下面写法也是可以的
+                    /*try {
+                        throw new Exception("the nubmer is greater than 3");
+                    } catch (Exception e) {
+                        subscriber.onError(e);
+                    }*/
+                }
+            }
+            emitter.onComplete();
+        });
+    }
+
+    /**
+     * onErrorReturn方法 返回一个镜像原有Observable行为的新Observable
+     * 会忽略前者的onError调用，不会将错误传递给观察者，而是发射一个特殊的项并调用观察者的onCompleted方法
+     */
+    public void onErrorReturn() {
+        Observable.create(new ObservableOnSubscribe<String>() {
+            @Override
+            public void subscribe(ObservableEmitter<String> e) throws Exception {
+                for (int i = 0; i <= 3; i++) {
+                    if (i == 2) {
+                        e.onError(new Throwable("出现错误了"));
+                    } else {
+                        e.onNext(i + "");
+                    }
+                   /* try {
+                        Thread.sleep(1000);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }*/
+                }
+                e.onComplete();
+            }
+        })
+                .subscribeOn(Schedulers.newThread())
+                .onErrorReturn(new Function<Throwable, String>() {
+                    @Override
+                    public String apply(@NonNull Throwable throwable) throws Exception {
+                        Log.e(TAG, "在onErrorReturn处理了: " + throwable.toString());
+                        //拦截到错误之后，返回一个结果发射，然后就正常结束了。
+                        return "1";
+                    }
+                })
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        Log.e(TAG, "收到消息: " + s);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        Log.e(TAG, "结果错误: " + throwable.toString());
+                    }
+                });
     }
 
     /**
