@@ -1345,44 +1345,241 @@ public class ObservableObj<T> {
      * 会忽略前者的onError调用，不会将错误传递给观察者，而是发射一个特殊的项并调用观察者的onCompleted方法
      */
     public void onErrorReturn() {
-        Observable.create(new ObservableOnSubscribe<String>() {
-            @Override
-            public void subscribe(ObservableEmitter<String> e) throws Exception {
-                for (int i = 0; i <= 3; i++) {
-                    if (i == 2) {
-                        e.onError(new Throwable("出现错误了"));
-                    } else {
-                        e.onNext(i + "");
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        if (i == 2) {
+                            e.onError(new Throwable("出现错误了"));
+                        } else {
+                            e.onNext(i + "");
+                        }
+               /* try {
+                    Thread.sleep(1000);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }*/
                     }
-                   /* try {
-                        Thread.sleep(1000);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }*/
-                }
-                e.onComplete();
-            }
-        })
+                    e.onComplete();
+                })
                 .subscribeOn(Schedulers.newThread())
-                .onErrorReturn(new Function<Throwable, String>() {
+                .onErrorReturn(throwable -> {
+                    Log.e(TAG, "在onErrorReturn处理了: " + throwable.toString());
+                    //拦截到错误之后，返回一个结果发射，然后就正常结束了。
+                    return "1";
+                })
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString()));
+    }
+
+    public void onErrorResumeNext() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        if (i == 2) {
+                            e.onError(new Throwable("出现错误了"));
+                        } else {
+                            e.onNext(i + "");
+                        }
+               /* try {
+                    Thread.sleep(1000);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }*/
+                    }
+                    e.onComplete();
+                })
+                .subscribeOn(Schedulers.newThread())
+                /*.onErrorReturn(throwable -> {
+                    Log.e(TAG, "在onErrorReturn处理了: " + throwable.toString());
+                    //拦截到错误之后，返回一个结果发射，然后就正常结束了。
+                    return "1";
+                })*/
+                /*.onErrorResumeNext(new Function<Throwable, ObservableSource<? extends String>>() {
                     @Override
-                    public String apply(@NonNull Throwable throwable) throws Exception {
-                        Log.e(TAG, "在onErrorReturn处理了: " + throwable.toString());
-                        //拦截到错误之后，返回一个结果发射，然后就正常结束了。
-                        return "1";
+                    public ObservableSource<? extends String> apply(Throwable throwable) throws Exception {
+                        return Observable.create(emitter -> {
+                            emitter.onNext("onErrorResumeNext");
+                            emitter.onNext("game over");
+                            emitter.onComplete();
+                        });
+                    }
+                })*/
+                .onErrorResumeNext(observer -> {
+                    observer.onNext("onErrorResumeNext");
+                    observer.onNext("game over");
+                    observer.onComplete();
+                })
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete")
+                );
+    }
+
+    public void onExceptionResumeNext() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        if (i == 2) {
+                            e.onError(new Exception("出现错误了"));
+                        } else {
+                            e.onNext(i + "");
+                        }
+               /* try {
+                    Thread.sleep(1000);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }*/
+                    }
+                    e.onComplete();
+                })
+                .subscribeOn(Schedulers.newThread())
+                .onExceptionResumeNext(observer -> {
+                    observer.onNext("onExceptionResumeNext");
+                    observer.onNext("game over");
+                    observer.onComplete();
+                })
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete")
+                );
+    }
+
+    public void retry() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        if (i == 2) {
+                            e.onError(new Exception("出现错误了"));
+                        } else {
+                            e.onNext(i + "");
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    e.onComplete();
+                })
+                /*.retry()*/
+                /*.retry(2)*/
+                /*.retry(new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable throwable) throws Exception {
+                        //返回假就是不让重新发射数据了，调用观察者的onError就终止了。
+                        //返回真就是让被观察者重新发射请求
+                        *//*if (throwable.getMessage().equals("出现错误了")) {
+                            return true;
+                        }*//*
+                        return false;
+                    }
+                })*/
+                /*.retry(2, new Predicate<Throwable>() {
+                    @Override
+                    public boolean test(Throwable throwable) throws Exception {
+                        *//*if (throwable.getMessage().equals("出现错误了")) {
+                            return true;
+                        }*//*
+                        return false;
+                    }
+                })*/
+                /*.retry(new BiPredicate<Integer, Throwable>() {
+                    @Override
+                    public boolean test(Integer integer, Throwable throwable) throws Exception {
+                        if (integer ==3){
+                            return false;
+                        }
+                        return true;
+                    }
+                })*/
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete")
+                );
+    }
+
+
+    public void retryWhen() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        if (i == 2) {
+                            e.onError(new Exception("出现错误了"));
+                        } else {
+                            e.onNext(i + "");
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    e.onComplete();
+                })
+                .retryWhen(new Function<Observable<Throwable>, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(Observable<Throwable> throwableObservable) throws Exception {
+                        return throwableObservable.flatMap(new Function<Throwable, ObservableSource<?>>() {
+                            @Override
+                            public ObservableSource<?> apply(Throwable throwable) throws Exception {
+                                //如果发射的onError就终止
+//                                return Observable.error(new Throwable("retryWhen终止啦"));
+                                return Observable.timer(100, TimeUnit.MILLISECONDS);
+                            }
+                        });
                     }
                 })
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(@NonNull String s) throws Exception {
-                        Log.e(TAG, "收到消息: " + s);
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete")
+                );
+    }
+
+    @SuppressLint("CheckResult")
+    public void retryUnitl() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        if (i == 2) {
+                            e.onError(new Exception("出现错误了"));
+                        } else {
+                            e.onNext(i + "");
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        Log.e(TAG, "结果错误: " + throwable.toString());
+                    e.onComplete();
+                })
+                .retryUntil(() -> {
+                    return false;
+                })
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete")
+                );
+    }
+
+    public void delay() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    e.onError(new Throwable("game over"));
+                    for (int i = 0; i <= 3; i++) {
+                        e.onNext(i + "-" + Thread.currentThread().toString());
                     }
-                });
+                    e.onComplete();
+                })
+                /*.delay(5, TimeUnit.SECONDS)*/
+                /*.delay(1, TimeUnit.SECONDS, Schedulers.io())*/
+                /*.delay(5,TimeUnit.SECONDS,true)*/
+                .delay()
+                .subscribe(s -> Log.e(TAG, "收到消息: " + s)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete")
+                );
     }
 
     /**
