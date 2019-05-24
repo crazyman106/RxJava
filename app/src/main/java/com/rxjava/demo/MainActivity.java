@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ObservableObj obj = new ObservableObj();
-        obj.delay();
+        obj.all();
         /**
          * 1.创建被观察者
          * 2.创建观察者

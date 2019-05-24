@@ -1,11 +1,14 @@
 package com.rxjava.demo.create;
 
 import android.annotation.SuppressLint;
+import android.os.SystemClock;
 import android.schedulers.AndroidSchedulers;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import com.rxjava.demo.fanxing.Func1;
 import io.reactivex.*;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.*;
 import io.reactivex.observables.GroupedObservable;
@@ -15,10 +18,7 @@ import org.reactivestreams.Subscription;
 
 import java.lang.reflect.Array;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
@@ -1563,23 +1563,226 @@ public class ObservableObj<T> {
                 );
     }
 
+    @SuppressLint("CheckResult")
     public void delay() {
+        Date datae = new Date();
         Observable
-                .create((ObservableOnSubscribe<String>) e -> {
+                /*.create((ObservableOnSubscribe<String>) e -> {
                     e.onError(new Throwable("game over"));
                     for (int i = 0; i <= 3; i++) {
                         e.onNext(i + "-" + Thread.currentThread().toString());
                     }
                     e.onComplete();
-                })
+                })*/
+                .range(0, 3)
                 /*.delay(5, TimeUnit.SECONDS)*/
                 /*.delay(1, TimeUnit.SECONDS, Schedulers.io())*/
                 /*.delay(5,TimeUnit.SECONDS,true)*/
-                .delay()
+                .delaySubscription(5000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        Log.e(TAG, "收到消息Accept: " + datae.getTime() + "--" + integer + "--" + Thread.currentThread().toString());
+                    }
+                })
+                .subscribe(s -> Log.e(TAG, "收到消息: " + datae.getTime() + "--" + s + "--" + Thread.currentThread().toString())
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete" + datae.getTime() + "--")
+                );
+    }
+
+    @SuppressLint("CheckResult")
+    public void doXXX() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    for (int i = 0; i <= 3; i++) {
+                        e.onNext(i + "-" + Thread.currentThread().toString());
+                    }
+                    e.onComplete();
+                })
+                .doOnEach(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        Log.e(TAG, "Disposable");
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Log.e(TAG, "收到消息_: " + s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "结果错误_: " + e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, "onComplete");
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> Log.e(TAG, "收到消息: " + s)
                         , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
                         , () -> Log.e(TAG, "onComplete")
                 );
+    }
+
+    @SuppressLint("CheckResult")
+    public void materialize() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    e.onNext("1");
+                    e.onNext("2");
+                    e.onNext("3");
+                    e.onComplete();
+                })
+                .materialize()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stringNotification -> {
+                            if (stringNotification.isOnNext()) {
+                                Log.e(TAG, "收到消息: " + stringNotification.getValue());
+                            } else if (stringNotification.isOnComplete()) {
+                                Log.e(TAG, "onComplete1:" + System.currentTimeMillis());
+                            }
+                        }
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> {
+                            Log.e(TAG, "onComplete2:" + System.currentTimeMillis());
+                        }
+                );
+    }
+
+    @SuppressLint("CheckResult")
+    public void timeInterval() {
+        Observable
+                .create((ObservableOnSubscribe<String>) e -> {
+                    e.onNext("1");
+                    e.onNext("2");
+                    e.onNext("3");
+                    e.onComplete();
+                })
+                .timeInterval()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stringNotification ->
+                                Log.e(TAG, "收到消息: " + stringNotification)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete2:" + System.currentTimeMillis())
+                );
+    }
+
+    @SuppressLint("CheckResult")
+    public void timeOut() {
+        Observable
+                .create((ObservableOnSubscribe<Integer>) e -> {
+                    e.onNext(1);
+                    SystemClock.sleep(100);
+                    e.onNext(2);
+                    SystemClock.sleep(100);
+                    e.onNext(3);
+                    SystemClock.sleep(100);
+                    e.onNext(4);
+                    SystemClock.sleep(100);
+                    e.onNext(5);
+                    SystemClock.sleep(100);
+                    e.onNext(6);
+//                    e.onComplete();
+                })
+//                .timeout(2, TimeUnit.SECONDS)
+                /*.timeout(2, TimeUnit.SECONDS, Observable.create(emitter -> {
+                    emitter.onNext("aa");
+                    emitter.onNext("bb");
+                    emitter.onComplete();
+                }))*/
+                // (Function<? super T, ? extends ObservableSource<? extends R>> mapper)
+                // (Function<? super T, ? extends ObservableSource<V>> mapper)
+                /*.timeout(new Function<Integer, ObservableSource<Integer>>() {
+                    @Override
+                    public ObservableSource<Integer> apply(Integer integer) throws Exception {
+                        return Observable.range(5, 10);
+                    }
+                })*/
+                .timestamp(TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stringNotification ->
+                                Log.e(TAG, "收到消息: " + stringNotification)
+                        , throwable -> Log.e(TAG, "结果错误: " + throwable.toString())
+                        , () -> Log.e(TAG, "onComplete2:" + System.currentTimeMillis())
+                );
+    }
+
+    @SuppressLint("CheckResult")
+    public void using() {
+        Observable.using(() -> Arrays.asList(new Integer[]{1, 2, 3, 4, 5}),
+                (Function<List<Integer>, ObservableSource<Integer>>) integers -> Observable.create(emitter -> {
+                    for (Integer data : integers) {
+                        emitter.onNext(data);
+                    }
+                }), integers -> Log.e(TAG, "释放资源:" + integers.toString()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    Disposable disposable;
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable = d;
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.e(TAG, "收到消息: " + integer);
+                        if (integer == 5) {
+                            disposable.dispose();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "结果错误: " + e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.e(TAG, "onComplete");
+                    }
+                });
+    }
+
+    @SuppressLint("CheckResult")
+    public void all() {
+        Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onNext(2);
+                    emitter.onNext(3);
+                    emitter.onNext(4);
+                    emitter.onComplete();
+                })
+                .subscribeOn(Schedulers.io())
+                /*.all(integer -> {
+                    if (integer % 2 == 0) {
+                        return true;
+                    }
+                    return false;
+                })*/
+                .any(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(Integer integer) throws Exception {
+                        if (integer % 2 == 0) {
+                            return true;
+                        }
+                        return false;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aBoolean -> Log.e(TAG, "success:" + aBoolean),
+                        throwable -> Log.e(TAG, "failed:" + throwable.getMessage()));
     }
 
     /**
