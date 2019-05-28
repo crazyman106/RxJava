@@ -13,14 +13,17 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.*;
 import io.reactivex.observables.GroupedObservable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.AsyncSubject;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.ReplaySubject;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.lang.reflect.Array;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ObservableObj<T> {
     private final String TAG = this.getClass().getSimpleName();
@@ -1785,6 +1788,128 @@ public class ObservableObj<T> {
                         throwable -> Log.e(TAG, "failed:" + throwable.getMessage()));
     }
 
+    @SuppressLint("CheckResult")
+    public void amb() {
+        List iterator = new ArrayList();
+        iterator.add(Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onNext(1);
+                    emitter.onNext(2);
+                    emitter.onNext(3);
+                    emitter.onNext(4);
+                    emitter.onComplete();
+                }));
+        iterator.add(Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onNext(5);
+                    emitter.onNext(6);
+                    emitter.onNext(7);
+                    emitter.onNext(8);
+                    emitter.onComplete();
+                }));
+        iterator.add(Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onNext(9);
+                    emitter.onNext(10);
+                    emitter.onNext(11);
+                    emitter.onNext(12);
+                    emitter.onComplete();
+                }));
+        iterator.add(Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onNext(13);
+                    emitter.onNext(14);
+                    emitter.onNext(15);
+                    emitter.onNext(16);
+                    emitter.onComplete();
+                }));
+        Observable.amb(iterator).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e(TAG, "onSubscribe:" + d.toString());
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.e(TAG, "onNext:" + o.toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError:" + e.getMessage().toString());
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete");
+            }
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    public void contains() {
+        Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onComplete();
+                })
+//                .contains(6)
+                .isEmpty()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean aBoolean) {
+                        Log.e(TAG, "onSuccess:" + aBoolean);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    public void defaultIfEmpty() {
+        Observable
+                .create((ObservableOnSubscribe<Integer>) emitter -> {
+                    emitter.onComplete();
+                })
+//                .defaultIfEmpty(5)
+                .switchIfEmpty(Observable.create(new ObservableOnSubscribe<Integer>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Integer> emitter) throws Exception {
+                        emitter.onNext(8);
+                    }
+                })).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Integer aBoolean) {
+                        Log.e(TAG, "onSuccess:" + aBoolean);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     /**
      * defer 就相当于懒加载，只有等observable 与observer建立了订阅关系时，observable才会建立
      *
@@ -1845,7 +1970,158 @@ public class ObservableObj<T> {
      */
     public Observable interval() {
         // TODO
+        Observable.timer(1, TimeUnit.SECONDS).subscribe(new Observer<Long>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.e(TAG, "onSub");
+            }
+
+            @Override
+            public void onNext(Long aLong) {
+                Log.e(TAG, "onNext:" + aLong);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "onError:");
+
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e(TAG, "onComplete:");
+            }
+        });
         return null;
     }
 
+    public Observable just() {
+        Observable.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return "aa";
+            }
+        });
+        return null;
+    }
+
+    public Observable compose() {
+        Observable.just(1).compose(transformer()).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+        return null;
+    }
+
+    public ObservableTransformer transformer() {
+        return new ObservableTransformer() {
+            @Override
+            public ObservableSource apply(Observable upstream) {
+                return upstream.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).unsubscribeOn(AndroidSchedulers.mainThread());
+            }
+        };
+    }
+
+    @SuppressLint("CheckResult")
+    public void subject() {
+        PublishSubject<Integer> subject = PublishSubject.create();
+        subject.subscribe(System.out::println);
+        Executor executor = Executors.newFixedThreadPool(5);
+        Observable.range(1, 5).subscribe(i -> {
+            executor.execute(() -> {
+                try {
+                    Thread.sleep(i * 200);
+                    subject.onNext(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        });
+    }
+
+    private static void testPublishSubject() throws InterruptedException {
+        PublishSubject<Integer> subject = PublishSubject.create();
+        subject.subscribe(i -> System.out.print("(1: " + i + ") "));
+
+        Executor executor = Executors.newFixedThreadPool(5);
+        Disposable disposable = Observable.range(1, 5).subscribe(i -> executor.execute(() -> {
+            try {
+                Thread.sleep(i * 200);
+                subject.onNext(i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }));
+
+        Thread.sleep(500);
+        subject.subscribe(i -> System.out.print("(2: " + i + ") "));
+
+        Observable.timer(2, TimeUnit.SECONDS).subscribe(i -> ((ExecutorService) executor).shutdown());
+    }
+
+    private static void testReplaySubject() throws InterruptedException {
+        ReplaySubject<Integer> subject = ReplaySubject.create();
+        subject.subscribe(i -> System.out.print("(1: " + i + ") "));
+
+        Executor executor = Executors.newFixedThreadPool(5);
+        Disposable disposable = Observable.range(1, 5).subscribe(i -> executor.execute(() -> {
+            try {
+                Thread.sleep(i * 200);
+                subject.onNext(i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }));
+
+        Thread.sleep(500);
+        subject.subscribe(i -> System.out.print("(2: " + i + ") "));
+
+        Observable.timer(2, TimeUnit.SECONDS).subscribe(i -> ((ExecutorService) executor).shutdown());
+    }
+
+
+    public void testAsyncSubject() {
+        AsyncSubject<Integer> asyncSubject = AsyncSubject.create();
+        asyncSubject.subscribe(i -> Log.e(TAG, i + "----"));
+
+        Observable.range(1, 5).subscribe(
+                i -> {
+                    asyncSubject.onNext(i);
+                    if (i == 5) {
+                        asyncSubject.onComplete();
+                    }
+                }
+        );
+    }
+
+    public void testBehaviorSubject() {
+        BehaviorSubject<Integer> asyncSubject = BehaviorSubject.createDefault(8);
+        asyncSubject.subscribe(i -> Log.e(TAG, i + "----"));
+
+        Observable.range(1, 5).subscribe(
+                i -> {
+                    asyncSubject.onNext(i);
+                    if (i == 5) {
+                        asyncSubject.onComplete();
+                    }
+                }
+        );
+    }
 }
