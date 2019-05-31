@@ -1,5 +1,26 @@
 # RxJava2.0
 
+依赖的四个基本接口(org.reactivestreams:reactive-streams:1.0.2):
+* Publisher
+* Subscriber
+* Subscription
+* Processor
+
+主要的是`Publisher`和`Subscriber`
+**`Publisher`** **发出**一系列的 **事件**,而 **`Subscriber`** 负责 **处理** 这些 **事件**
+
+**Scheduler类型**
+| Scheduler类型 | 	使用方式     | 	含义       | 使用场景     |
+|:--------:| -------------:|:--------:| -------------:|
+| IoScheduler| Schedulers.io() |io操作线程|读写SD卡文件，查询数据库，访问网络等IO密集型操作|
+|  NewThreadScheduler| Schedulers.newThread()  |创建新线程|耗时操作等|
+|SingleScheduler  |  Schedulers.single() |	单例线程|只需一个单例线程时|
+|ComputationScheduler  |Schedulers.computation()   |CPU计算操作线程|图片压缩取样、xml,json解析等CPU密集型计算|
+|  TrampolineScheduler| Schedulers.trampoline()|当前线程|需要在当前线程立即执行任务时|
+|HandlerScheduler	|	AndroidSchedulers.mainThread()|Android主线程|更新UI等|
+
+
+
 ## Flowable与BackPress
 背压介绍:
 当上下游处在不同的线程中时,通过Observable发射,处理,响应数据流时,如果上游发射的速度快于下游接受处理数据的速度
@@ -789,15 +810,20 @@ void drainNormal() {
 
 
 ## Subject
-Subject 可以同时代表 Observer 和 Observable，允许从数据源中多次发送结果给多个观察者。除了 onSubscribe(), onNext(), onError() 和 onComplete() 之外，所有的方法都是线程安全的。此外，你还可以使用 toSerialized() 方法，也就是转换成串行的，将这些方法设置成线程安全的。
+- Subject 可以同时代表 Observer 和 Observable，允许从数据源中多次发送结果给多个观察者。除了 onSubscribe(), onNext(), onError() 和 onComplete() 之外，所有的方法都是线程安全的。此外，你还可以使用 toSerialized() 方法，也就是转换成串行的，将这些方法设置成线程安全的。
+    * AsyncSubject:只有当 Subject 调用 onComplete 方法时，才会将 Subject 中的最后一个事件传递给所有的 Observer。(前边的其他事件不会发送)
+    * BehaviorSubject:该类有创建时需要一个默认参数，该默认参数会在 Subject 未发送过其他的事件时，向注册的 Observer 发送；新注册的 Observer 不会收到之前发送的事件，这点和 PublishSubject 一致。
+    * PublishSubject:不会改变事件的发送顺序；在已经发送了一部分事件之后注册的 Observer 不会收到之前发送的事件。
+    * ReplaySubject:无论什么时候注册 Observer 都可以接收到任何时候通过该 Observable 发射的事件。
+    * UnicastSubject:只允许一个 Observer 进行监听，在该 Observer 注册之前会将发射的所有的事件放进一个队列中，并在 Observer 注册的时候一起通知给它。
 
 
 
+[参考](https://www.jianshu.com/p/34b8b47c268b)
+[参考](https://blog.csdn.net/qidanchederizi/article/details/78170731)
+[参考](http://reactivex.io/RxJava/2.x/javadoc/)
 
-https://www.jianshu.com/p/34b8b47c268b
-https://blog.csdn.net/qidanchederizi/article/details/78170731
-http://reactivex.io/RxJava/2.x/javadoc/
-
-http://reactivex.io/documentation/operators.html#tree
-https://jsonchao.github.io/2019/01/01/Android%E4%B8%BB%E6%B5%81%E4%B8%89%E6%96%B9%E5%BA%93%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%94%E3%80%81%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3RxJava%E6%BA%90%E7%A0%81%EF%BC%89/
-
+[参考](http://reactivex.io/documentation/operators.html#tree)
+[参考](https://jsonchao.github.io/2019/01/01/Android%E4%B8%BB%E6%B5%81%E4%B8%89%E6%96%B9%E5%BA%93%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%BA%94%E3%80%81%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3RxJava%E6%BA%90%E7%A0%81%EF%BC%89/
+)
+[参考](https://mp.weixin.qq.com/s?__biz=MzIwMTAzMTMxMg==&mid=2649492749&idx=1&sn=a4d2e79afd8257b57c6efa57cbff4404&chksm=8eec86f2b99b0fe46f61f324e032af335fbe02c7db1ef4eca60abb4bc99b4d216da7ba32dc88&scene=38#wechat_redirect)
