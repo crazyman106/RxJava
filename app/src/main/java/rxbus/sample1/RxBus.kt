@@ -1,8 +1,6 @@
 package rxbus.sample1
 
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import io.reactivex.subscribers.SerializedSubscriber
 import org.reactivestreams.Subscription
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,6 +14,5 @@ class RxBus {
     private val subject = PublishSubject.create<Any>().toSerialized()
     val instace: RxBus by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
         RxBus()
-
     }
 }
